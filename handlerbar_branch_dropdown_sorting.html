@@ -1,0 +1,66 @@
+<html>
+    
+    <head>
+    <title>Handelbar Branch DropDown Sorting 
+    </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.js"></script>
+
+   <script>
+$(document).ready(function() {
+
+         Handlebars.registerHelper('eachInMap', function(data,block) {
+           var out="";
+           var temp="{";
+           Object.keys(data).map(function(prop)
+           {
+            temp+='"'+data[prop].substring(0,1).toUpperCase()+data[prop].substring(1,data[prop].length)+'":"'+prop+'",'
+           });
+           temp=temp.substring(0,temp.length-1);
+           temp=temp+"}";
+           var jsondata=JSON.parse(temp);
+           const ordered={};
+           Object.keys(jsondata).sort().forEach(function(key)
+           {
+               ordered[key]=jsondata[key];
+           })
+           Object.keys(ordered).map(function(prop){
+            out+=block.fn({value:ordered[prop],label:prop})
+           });
+           return out;
+  
+           });
+       var source=$("#built-in-helpers-template").html();
+       var template=Handlebars.compile(source);
+       var content={"branchMap":{"1":"Vellore","3":"Arcot","2":"chennai"}};
+      $("#content-placeholder").html(template(content));
+});
+
+   </script>
+
+    </head>
+    
+ <body>
+<script id="built-in-helpers-template" type="text/x-handlebars-template">
+
+<div>
+<h1>Handlebar Sort Json based on Value</h1>
+<label> Original Json value </label>
+<br>
+<textarea style="width:60%">{"branchMap":{"1":"Vellore","3":"arcot","2":"chennai"}};</textarea>
+</div>
+<label>Select Branch</label>
+<select>
+    {{#eachInMap branchMap}}
+    <option value={{this.value}}>{{this.label}}</option>
+    {{/eachInMap}}
+</select>
+
+
+
+</script>
+
+<div id="content-placeholder"></div>
+
+    </body>
+</html>
